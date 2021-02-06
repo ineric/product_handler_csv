@@ -1,5 +1,6 @@
 package com.ineric.product.utils.impl;
 
+import com.ineric.Main;
 import com.ineric.product.model.Product;
 import com.ineric.product.utils.common.Constants;
 import com.ineric.product.utils.ProductsWriter;
@@ -11,8 +12,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductsWriterToCSV implements ProductsWriter {
+
+    private static Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     @Override
     public void saveProducts(List<Product> products, String outFileName) throws IOException {
@@ -24,8 +29,8 @@ public class ProductsWriterToCSV implements ProductsWriter {
                 try {
                     bufferedWriter.write(product.toString());
                     bufferedWriter.newLine();
-                } catch (IOException ignored) {
-
+                } catch (IOException exception) {
+                    LOGGER.log(Level.SEVERE, "Error save products: ", exception);
                 }
             });
         }
