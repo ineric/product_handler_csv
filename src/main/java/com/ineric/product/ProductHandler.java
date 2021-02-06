@@ -1,5 +1,6 @@
 package com.ineric.product;
 
+import com.ineric.product.exception.InvalidColumnsCountException;
 import com.ineric.product.model.Product;
 import com.ineric.product.utils.ProductsReader;
 import com.ineric.product.utils.common.Constants;
@@ -145,6 +146,8 @@ public class ProductHandler {
             LOGGER.log(Level.SEVERE, String.format("File %s read error. May not be found", fileName), exception);
         } catch (NumberFormatException exception) {
             LOGGER.log(Level.SEVERE, String.format("File %s read error. Inhomogeneous data structure.", fileName), exception);
+        } catch (InvalidColumnsCountException exception) {
+            LOGGER.log(Level.SEVERE, exception.getMessage(), exception);
         }
 
         LOGGER.log(Level.INFO, String.format("Finish read products from %s | Total count: %s", fileName, products.size()));

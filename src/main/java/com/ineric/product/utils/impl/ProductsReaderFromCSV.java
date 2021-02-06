@@ -28,6 +28,6 @@ public class ProductsReaderFromCSV implements ProductsReader {
 
     private Product mapStringToItem(String productLine) {
         String[] productValues = productLine.split(Constants.CSV_SEPARATOR);
-        return new Product(Integer.valueOf(productValues[0]), productValues[1], productValues[2], productValues[3], Double.valueOf(productValues[4]));
+        return new Product(productValues);
     }
 }
