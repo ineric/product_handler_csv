@@ -12,7 +12,10 @@ public class Main {
     private static Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
+        readParamsAndRun(args);
+    }
 
+    private static void readParamsAndRun(String[] args) throws InterruptedException {
         String sourceDirectory = "";
         String outFileName = "";
 
@@ -23,12 +26,15 @@ public class Main {
                 outFileName = args[i + 1];
         }
 
+        Main.initProductHandler(sourceDirectory, outFileName);
+    }
+
+    private static void initProductHandler(String sourceDirectory, String outFileName) throws InterruptedException {
         if (sourceDirectory.isEmpty() || outFileName.isEmpty()) {
             LOGGER.warning(String.format("Expected: %s PATH_TO_CSV %s FILE_OUT_RESULT", PARAM_SOURCE, PARAM_OUT));
         } else {
             ProductHandler productHandler = new ProductHandler(sourceDirectory, outFileName);
             productHandler.runHandler();
         }
-
     }
 }
