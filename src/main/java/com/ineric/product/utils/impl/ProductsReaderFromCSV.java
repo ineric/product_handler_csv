@@ -17,7 +17,6 @@ public class ProductsReaderFromCSV implements ProductsReader {
 
     @Override
     public List<Product> getProducts(String fileName) throws FileNotFoundException {
-
         InputStream inputStream = new FileInputStream(new File(fileName));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 

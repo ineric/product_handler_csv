@@ -36,7 +36,6 @@ public class ProductHandler {
     private List<String> fileNames;
     private Map<Integer, List<Product>> allProducts = new HashMap<>();
 
-
     private static Logger LOGGER = Logger.getLogger(ProductHandler.class.getName());
 
     public ProductHandler(@NotNull String sourceDirectory, @NotNull String outFileName) {
@@ -74,6 +73,28 @@ public class ProductHandler {
             List<Product> resultProducts = prepareProducts();
             saveResultProducts(resultProducts);
         }
+    }
+
+    private synchronized void addProductsToResult(List<Product> products) {
+        if (products == null) {
+            LOGGER.log(Level.WARNING, "An attempt was made to add null products to the results list.");
+        } else {
+            this.allProducts.putAll(products
+                    .stream()
+                    .collect(Collectors.groupingBy(Product::getId)));
+        }
+    }
+
+    private List<Product> prepareProducts() {
+        LOGGER.log(Level.INFO, "Start prepare products !");
+
+        return allProducts.values()
+                .stream()
+                .map(products -> products.stream().sorted().limit(MAX_SIZE_SAME_PRODUCT).collect(Collectors.toList()))
+                .flatMap(List::stream)
+                .sorted()
+                .limit(MAX_SIZE_PRODUCTS)
+                .collect(Collectors.toList());
     }
 
     private boolean canStartHandler() {
@@ -139,27 +160,4 @@ public class ProductHandler {
             LOGGER.log(Level.SEVERE, "An error occurred while saving product results to a file.", exception);
         }
     }
-
-    private synchronized void addProductsToResult(List<Product> products) {
-        if (products == null) {
-            LOGGER.log(Level.WARNING, "An attempt was made to add null products to the results list.");
-        } else {
-            this.allProducts.putAll(products
-                    .stream()
-                    .collect(Collectors.groupingBy(Product::getId)));
-        }
-    }
-
-    private List<Product> prepareProducts() {
-        LOGGER.log(Level.INFO, "Start prepare products !");
-
-        return allProducts.values()
-                .stream()
-                .map(products -> products.stream().sorted().limit(MAX_SIZE_SAME_PRODUCT).collect(Collectors.toList()))
-                .flatMap(List::stream)
-                .sorted()
-                .limit(MAX_SIZE_PRODUCTS)
-                .collect(Collectors.toList());
-    }
-
 }
