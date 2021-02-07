@@ -1,9 +1,13 @@
 package com.ineric;
 
 import com.ineric.product.ProductHandler;
+import com.ineric.product.exception.InvalidPathToDirectoryException;
 import com.ineric.product.exception.MissingIncomingParametersException;
+import com.ineric.product.exception.NoFilesToProcessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.InvalidPathException;
 
 public class Main {
 
@@ -30,7 +34,7 @@ public class Main {
 
         try {
             initProductHandler(sourceDirectory, outFileName);
-        } catch (MissingIncomingParametersException exception){
+        } catch (MissingIncomingParametersException exception) {
             LOGGER.error("Expected: {} ", exception.getMessage());
         }
     }
@@ -39,8 +43,12 @@ public class Main {
         if (sourceDirectory.isEmpty() || outFileName.isEmpty()) {
             throw new MissingIncomingParametersException(PARAM_SOURCE, PARAM_OUT);
         } else {
-            ProductHandler productHandler = new ProductHandler(sourceDirectory, outFileName);
-            productHandler.runHandler();
+            try {
+                ProductHandler productHandler = new ProductHandler(sourceDirectory, outFileName);
+                productHandler.runHandler();
+            } catch (NoFilesToProcessException | InvalidPathException | InvalidPathToDirectoryException exception) {
+                LOGGER.error(exception.getMessage());
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 package com.ineric.product.model;
 
 import com.ineric.product.exception.InvalidColumnsCountException;
+import com.ineric.product.exception.InvalidModelMapException;
 import com.ineric.product.utils.common.Constants;
+
+import java.util.Arrays;
 
 import static com.ineric.product.utils.common.Constants.PRODUCT_COLUMNS_COUNT;
 
@@ -23,14 +26,18 @@ public class Product implements Comparable<Product> {
 
     public Product(String[] productLine) {
         if (!PRODUCT_COLUMNS_COUNT.equals(productLine.length)) {
-            throw new InvalidColumnsCountException(String.format("Error columns count. Excepted %s ", PRODUCT_COLUMNS_COUNT));
+            throw new InvalidColumnsCountException(productLine.length, PRODUCT_COLUMNS_COUNT);
         }
 
-        this.id = Integer.valueOf(productLine[0]);
-        this.name = productLine[1];
-        this.condition = productLine[2];
-        this.state = productLine[3];
-        this.price = Double.valueOf(productLine[4]);
+        try {
+            this.id = Integer.valueOf(productLine[0]);
+            this.name = productLine[1];
+            this.condition = productLine[2];
+            this.state = productLine[3];
+            this.price = Double.valueOf(productLine[4]);
+        } catch (NumberFormatException exception) {
+            throw new InvalidModelMapException(Arrays.toString(productLine), exception.getMessage());
+        }
     }
 
     public Product() {
