@@ -1,7 +1,7 @@
 package com.ineric;
 
 import com.ineric.product.ProductHandler;
-
+import com.ineric.product.exception.MissingIncomingParametersException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +13,7 @@ public class Main {
     private static Logger LOGGER = LoggerFactory.getLogger(Main.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
+
         readParamsAndRun(args);
     }
 
@@ -27,12 +28,16 @@ public class Main {
                 outFileName = args[i + 1];
         }
 
-        initProductHandler(sourceDirectory, outFileName);
+        try {
+            initProductHandler(sourceDirectory, outFileName);
+        } catch (MissingIncomingParametersException exception){
+            LOGGER.error("Expected: {} ", exception.getMessage());
+        }
     }
 
     private static void initProductHandler(String sourceDirectory, String outFileName) throws InterruptedException {
         if (sourceDirectory.isEmpty() || outFileName.isEmpty()) {
-            LOGGER.error("Expected: {} PATH_TO_CSV {} FILE_OUT_RESULT", PARAM_SOURCE, PARAM_OUT);
+            throw new MissingIncomingParametersException(PARAM_SOURCE, PARAM_OUT);
         } else {
             ProductHandler productHandler = new ProductHandler(sourceDirectory, outFileName);
             productHandler.runHandler();
