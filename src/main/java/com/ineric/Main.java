@@ -2,14 +2,15 @@ package com.ineric;
 
 import com.ineric.product.ProductHandler;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
     private static final String PARAM_SOURCE = "-source";
     private static final String PARAM_OUT = "-out";
 
-    private static Logger LOGGER = Logger.getLogger(Main.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(Main.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
         readParamsAndRun(args);
@@ -26,12 +27,12 @@ public class Main {
                 outFileName = args[i + 1];
         }
 
-        Main.initProductHandler(sourceDirectory, outFileName);
+        initProductHandler(sourceDirectory, outFileName);
     }
 
     private static void initProductHandler(String sourceDirectory, String outFileName) throws InterruptedException {
         if (sourceDirectory.isEmpty() || outFileName.isEmpty()) {
-            LOGGER.warning(String.format("Expected: %s PATH_TO_CSV %s FILE_OUT_RESULT", PARAM_SOURCE, PARAM_OUT));
+            LOGGER.error("Expected: {} PATH_TO_CSV {} FILE_OUT_RESULT", PARAM_SOURCE, PARAM_OUT);
         } else {
             ProductHandler productHandler = new ProductHandler(sourceDirectory, outFileName);
             productHandler.runHandler();
